@@ -37,6 +37,13 @@
     #placeholder-image { background: transparent !important; border: none !important; }
     #capture-area { background: transparent !important; border: none !important; box-shadow: none !important; width: 210mm; min-height: 296mm; padding: 0.5cm; box-sizing: border-box; display: none; }
     
+    #btn-ped-tips, #btn-spill {
+        height: 34px !important; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     /* --- PLASSBESPARENDE HISTORIESIDE --- */
     .story-page { width: 100%; max-width: 760px; margin: 0 auto 12px auto; text-align: center; padding: 8px; box-sizing: border-box; position: relative; background-color: #fff; border: 1px dashed #bbb; }
     .page-title { font-family: 'Trykkskrift', sans-serif; font-size: 1.5rem; margin: 0 0 4px 0; padding: 0; text-align: center; width: 100%; color: #333; line-height: 1.1; }
@@ -46,13 +53,61 @@
     .cards-grid { display: grid; width: 100%; gap: 10px; margin-top: 6px; }
     .grid-cols-3 { grid-template-columns: repeat(3, 1fr); max-width: 570px; margin: 6px auto 0 auto; }
     .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-    
-    .brikke-kort { background-color: white; border: 1px solid #444; border-radius: 8px; padding: 6px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; min-height: 180px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .brikke-bilde-ramme { width: 100%; aspect-ratio: 433 / 591; background-color: #fafafa; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 6px; border: 1px solid #eee; }
+
+/* 1. STANDARD (TEKST UNDER) & BARE BILDER */
+.brikke-kort { 
+    background-color: white; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 6px; 
+    box-sizing: border-box; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: space-between; 
+    position: relative; 
+    min-height: 180px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+}
+
+/* Rammen rundt bildene lytter nå direkte til historie-fargen */
+.brikke-bilde-ramme { 
+    width: 100%; 
+    aspect-ratio: 433 / 591; 
+    background-color: #fafafa; 
+    border-radius: 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden; 
+    margin-bottom: 6px; 
+    border-width: 3.5px;
+    border-style: solid;
+    /* Tvinger fargen til å bruke variabelen, faller tilbake på blå om den ikke finnes */
+    border-color: var(--historie-farge, #a2c7e5) !important; 
+    box-sizing: border-box; 
+}
+
     .brikke-bilde-ramme img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
-    
-    .brikke-tekst { line-height: 1.2; text-align: center; word-break: break-word; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-top: 2px; }
-    .brikke-nummer-merke { position: absolute; top: -6px; left: -6px; background-color: #333; color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: sans-serif; }
+    .brikke-tekst { color: #333; line-height: 1.2; text-align: center; word-break: break-word; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-top: 2px; }
+
+    .brikke-nummer-merke { 
+        position: absolute; 
+        top: -6px; 
+        left: -6px; 
+        background-color: #a2c7e5; 
+        color: white; 
+        width: 22px; 
+        height: 22px; 
+        border-radius: 50%; 
+        font-size: 0.75rem; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: bold; 
+        font-family: sans-serif; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
 
     /* --- DROPDOWN MENU --- */
     .menu-container { position: relative; margin-bottom: 10px; }
@@ -65,638 +120,210 @@
     .dropdown-menu a:hover { background-color: #34495e; }
     .menu-item-disabled { opacity: 0.4; filter: grayscale(100%); pointer-events: none; cursor: default; }
 
-/* --- VISUELL HISTORIE-VELGER --- */
-.story-selector-box {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
+    /* --- VISUELL HISTORIE-VELGER --- */
+    .story-selector-box { background: rgba(0, 0, 0, 0.2); padding: 12px; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255, 255, 255, 0.05); }
+    .story-selector-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85rem; }
+    .selector-title { font-weight: 600; color: var(--sidebar-text); }
+    .selector-actions { display: flex; gap: 6px; }
+    .select-btn { background: rgba(255, 255, 255, 0.1); border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem; padding: 3px 8px; font-weight: 600; transition: all 0.2s ease; }
+    .select-btn.all { color: #54a0ff; }
+    .select-btn.all:hover { background: rgba(84, 160, 255, 0.2); }
+    .select-btn.none { color: #ff7675; }
+    .select-btn.none:hover { background: rgba(255, 118, 117, 0.2); }
+    .story-list-scroll { max-height: 180px; overflow-y: auto; background: rgba(0, 0, 0, 0.15); padding: 6px; border-radius: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .story-option { display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); color: #ced6e0; padding: 8px 10px; border-radius: 6px; cursor: pointer; user-select: none; transition: all 0.15s ease; font-size: 0.85rem; border: 1px solid transparent; }
+    .story-option:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+    .story-option.active { background: rgba(39, 174, 96, 0.2); border-color: var(--accent-green); color: #fff; font-weight: 600; }
+    .story-option input[type="checkbox"] { display: none; }
+    .story-option::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #57606f; margin-right: 10px; display: inline-block; transition: all 0.15s ease; }
+    .story-option.active::before { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+    .story-list-scroll::-webkit-scrollbar { width: 6px; }
+    .story-list-scroll::-webkit-scrollbar-track { background: transparent; }
+    .story-list-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+    .story-list-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-.story-selector-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 0.85rem;
-}
+    /* --- EFFEKTIV UTKLIPPING UTEN MELLOMROM (SKJERM) --- */
+    .separate-tekst-container { margin-top: 20px; padding-top: 10px; border-top: 2px dashed #ddd; display: flex; flex-direction: column; gap: 0 !important; width: 100%; }
+    .klippe-linje { background: #fafafa; border-top: none !important; border-left: 1.5px dashed #b5b5b5 !important; border-right: 1.5px dashed #b5b5b5 !important; border-bottom: 1.5px dashed #b5b5b5 !important; border-radius: 0 !important; padding: 10px 15px !important; margin: 0 !important; justify-content: flex-start !important; text-align: left !important; position: relative; }
+    .separate-tekst-container .klippe-linje:first-child { border-top: 1.5px dashed #b5b5b5 !important; }
+    .klippe-linje::after { content: "✂"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1rem; }
 
-.selector-title {
-    font-weight: 600;
-    color: var(--sidebar-text);
-}
+    .game-container:has([style*="opacity: 0.3"]) { background-color: rgba(15, 49, 76, 0.4) !important; outline: 3px dashed #ffd166 !important; outline-offset: 10px; box-shadow: inset 0 0 50px rgba(46, 196, 182, 0.2) !important; transition: all 0.2s ease; }
+    .kort-sveve-over { background-color: #17476c !important; border-color: #ffd166 !important; transform: scale(1.04) !important; box-shadow: 0 0 calc(25px * var(--spill-zoom, 1)) rgba(255, 209, 102, 0.6) !important; transition: transform 0.15s ease, background-color 0.15s ease; }
 
-.selector-actions {
-    display: flex;
-    gap: 6px;
-}
-
-/* Små moderne "pille-knapper" for Alle/Ingen */
-.select-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    padding: 3px 8px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-.select-btn.all { color: #54a0ff; }
-.select-btn.all:hover { background: rgba(84, 160, 255, 0.2); }
-.select-btn.none { color: #ff7675; }
-.select-btn.none:hover { background: rgba(255, 118, 117, 0.2); }
-
-/* Selve listen over historier */
-.story-list-scroll {
-    max-height: 180px; /* Økt ørlite for bedre plass */
-    overflow-y: auto;
-    background: rgba(0, 0, 0, 0.15); /* Mørk bakgrunn i stedet for kritthvit */
-    padding: 6px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px; /* Avstand mellom historiekortene */
-}
-
-/* --- STILING AV DE ENKELTE ELEMENTENE (Må oppdateres i din JS som genererer listen) --- */
-.story-option {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    color: #ced6e0;
-    padding: 8px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.15s ease;
-    font-size: 0.85rem;
-    border: 1px solid transparent;
-}
-
-.story-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-}
-
-/* Stil når checkboxen faktisk ER sjekket */
-.story-option.active {
-    background: rgba(39, 174, 96, 0.2); /* Bruker din --accent-green med transparens */
-    border-color: var(--accent-green);
-    color: #fff;
-    font-weight: 600;
-}
-
-/* Skjul den fysiske stygge checkboxen, siden hele kortet fungerer som knapp */
-.story-option input[type="checkbox"] {
-    display: none;
-}
-
-/* Custom "merke" eller sirkel foran teksten for å indikere status */
-.story-option::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #57606f;
-    margin-right: 10px;
-    display: inline-block;
-    transition: all 0.15s ease;
-}
-
-.story-option.active::before {
-    background: var(--accent-green);
-    box-shadow: 0 0 8px var(--accent-green);
-}
-
-/* Gjør scrollbaren til listen mer subtil og lekker */
-.story-list-scroll::-webkit-scrollbar { width: 6px; }
-.story-list-scroll::-webkit-scrollbar-track { background: transparent; }
-.story-list-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-.story-list-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-/* --- EFFEKTIV UTKLIPPING UTEN MELLOMROM (SKJERM) --- */
-.separate-tekst-container {
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 2px dashed #ddd;
-    display: flex;
-    flex-direction: column;
-    gap: 0 !important; /* Fjerner alt mellomrom mellom boksene */
-    width: 100%;
-}
-
-.klippe-linje {
-    background: #fafafa;
-    /* Legger stiplet linje KUN i bunnen for å unngå doble linjer */
-    border-top: none !important;
-    border-left: 1.5px dashed #b5b5b5 !important;
-    border-right: 1.5px dashed #b5b5b5 !important;
-    border-bottom: 1.5px dashed #b5b5b5 !important;
-    border-radius: 0 !important; /* Fjerner runde hjørner så de smelter sammen */
-    padding: 10px 15px !important;
-    margin: 0 !important;
-    justify-content: flex-start !important;
-    text-align: left !important;
-    position: relative;
-}
-
-/* Sørger for at den øverste boksen også har en topplinje */
-.separate-tekst-container .klippe-linje:first-child {
-    border-top: 1.5px dashed #b5b5b5 !important;
-}
-
-/* Plasserer saksa subtilt på høyre ytterkant */
-.klippe-linje::after {
-    content: "✂";
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    font-size: 1rem;
-}
-
-/* Når et kort dras (opacity: 0.3), gir vi hele spillområdet en tøff glød og en animert effekt */
-.game-container:has([style*="opacity: 0.3"]) {
-    background-color: rgba(15, 49, 76, 0.4) !important; /* Gjør bakgrunnen litt lysere/blåere */
-    outline: 3px dashed #ffd166 !important; /* Lager en stiplet "sorteringsbane" rundt hele spillet */
-    outline-offset: 10px;
-    box-shadow: inset 0 0 50px rgba(46, 196, 182, 0.2) !important; /* Gir en fin indre glød */
-    transition: all 0.2s ease;
-}
-
-/* 🌟 Effekten som skjer MENS du drar et kort over et annet */
-.kort-sveve-over {
-    background-color: #17476c !important; /* Lysere blåfarge */
-    border-color: #ffd166 !important;     /* Gul/oransje ramme */
-    transform: scale(1.04) !important;    /* Kortet blir ørlite større */
-    box-shadow: 0 0 calc(25px * var(--spill-zoom, 1)) rgba(255, 209, 102, 0.6) !important;
-    transition: transform 0.15s ease, background-color 0.15s ease;
-}
-
-/* Modal bakgrunn (skyggelegger resten av siden) */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(1, 22, 39, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-}
-
-/* Selve modal-boksen */
-.modal-content {
-    background: #0b253a;
-    border: 2px solid #2ec4b6;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 700px;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: modalInn 0.25s ease-out;
-}
-
-@keyframes modalInn {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid rgba(46, 196, 182, 0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-}
-
-.modal-header h3 { margin: 0; font-size: 1.3rem; }
-
-.modal-close-x {
-    background: none;
-    border: none;
-    color: #ffd166;
-    font-size: 1.8rem;
-    cursor: pointer;
-}
-
-/* Scrollbart område for historiene */
-.modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Hvert historie-valg i listen */
-.modal-historie-rad {
-    background: #0f314c;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.modal-historie-rad:hover {
-    background: #17476c;
-    border-color: #ffd166;
-}
-
-/* Når en historie er valgt (aktiv) */
-.modal-historie-rad.valgt {
-    border-color: #2ec4b6;
-    background: #133d5f;
-    box-shadow: 0 0 15px rgba(46, 196, 182, 0.3);
-}
-
-.modal-historie-info { flex: 1; color: white; }
-.modal-historie-title { font-weight: bold; font-size: 1.05rem; margin-bottom: 4px; }
-.modal-historie-desc { font-size: 0.85rem; color: #a0aec0; }
-
-/* Miniatyrbilde-container */
-.modal-thumb-container {
-    display: flex;
-    gap: 4px;
-    background: rgba(0,0,0,0.2);
-    padding: 4px;
-    border-radius: 4px;
-}
-
-.modal-thumb {
-    width: 45px;
-    height: 45px;
-    object-fit: cover;
-    border-radius: 3px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Knapper i bunnen */
-.modal-footer {
-    padding: 15px 20px;
-    border-top: 1px solid rgba(46, 196, 182, 0.2);
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.modal-btn {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.15s;
-}
-
-.btn-success { background: #27ae60; color: white; }
-.btn-success:hover { background: #2ecc71; }
-.btn-secondary { background: #7f8c8d; color: white; }
-.btn-secondary:hover { background: #95a5a6; }
-.btn-danger { background: #e74c3c; color: white; margin-right: auto; } /* Skyver nullstill til venstre */
-.btn-danger:hover { background: #c0392b; }
-
-/* Elementene i modalens venstremeny */
-.modal-valgt-item {
-    background: #17476c;
-    border: 1px solid #2ec4b6;
-    border-radius: 6px;
-    padding: 8px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    font-size: 0.9rem;
-    animation: vareInn 0.2s ease;
-}
-
-.modal-fjern-kryss {
-    background: none;
-    border: none;
-    color: #ff7675;
-    font-size: 1.2rem;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 0 5px;
-    line-height: 1;
-}
-
-.modal-fjern-kryss:hover {
-    color: #e74c3c;
-    transform: scale(1.2);
-}
-
-@keyframes vareInn {
-    from { opacity: 0; transform: translateX(-5px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-
-
-/* --- PUSLESPILLKORT MED DOBBEL KLIPPELINJE FOR SAKS --- */
-
-/* Selve hovedkortet */
-.brikke-kort.pusle-stil { 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; 
-    gap: 0; 
-    padding: 0; 
-    background-color: #fff; 
-    position: relative; 
-    border: 3.5px solid #a2c7e5; 
-    border-radius: 12px;
-    box-sizing: border-box;
-    overflow: visible !important; 
-}
-
-/* Bildepanelet */
-.brikke-kort.pusle-stil .brikke-bilde-ramme { 
-    width: 100%; 
-    height: auto; 
-    margin-bottom: 0; 
-    border: none; 
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    overflow: hidden; 
-    background: #fff; 
+    /* --- MODAL --- */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1, 22, 39, 0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { 
+    background: #0b253a; 
+    border: 2px solid #2ec4b6; 
+    border-radius: 12px; 
+    width: 90%; 
+    max-width: 850px; /* 🌟 Gjort litt bredere (fra 700px) så historieradene får mer pusterom på laptop */
+    
+    /* 🌟 NYTT: Tvinger modalen til å bruke 85% av skjermhøyden som standard... */
+    height: 90vh; 
+    /* ...men setter en fornuftig maksgrense så den ikke blir strukket for langt på store skjermer */
+    max-height: 800px; 
+    
     display: flex; 
-    position: relative; 
-    z-index: 1; 
-}
-.brikke-kort.pusle-stil .brikke-bilde-ramme img { 
-    width: 100%; 
-    height: auto; 
-    object-fit: contain; 
-    display: block; 
+    flex-direction: column; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    animation: modalInn 0.25s ease-out; 
 }
 
-/* Det grå skjøtefeltet */
-.brikke-kort.pusle-stil .brikke-pusle-skjoet { 
-    width: 100%; 
-    height: 55px; 
-    background-color: #d1d5db; 
-    z-index: 2; 
-    position: relative; 
-}
+    @keyframes modalInn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-header { padding: 15px 20px; border-bottom: 1px solid rgba(46, 196, 182, 0.2); display: flex; justify-content: space-between; align-items: center; color: white; }
+    .modal-header h3 { margin: 0; font-size: 1.3rem; }
+    .modal-close-x { background: none; border: none; color: #ffd166; font-size: 1.8rem; cursor: pointer; }
+    .modal-body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    .modal-historie-rad { background: #0f314c; border: 2px solid transparent; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.2s; }
+    .modal-historie-rad:hover { background: #17476c; border-color: #ffd166; }
+    .modal-historie-rad.valgt { border-color: #2ec4b6; background: #133d5f; box-shadow: 0 0 15px rgba(46, 196, 182, 0.3); }
+    .modal-historie-info { flex: 1; color: white; }
+    .modal-historie-title { font-weight: bold; font-size: 1.05rem; margin-bottom: 4px; }
+    .modal-historie-desc { font-size: 0.85rem; color: #a0aec0; }
+    .modal-thumb-container { display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 4px; }
+    .modal-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
+    .modal-footer { padding: 15px 20px; border-top: 1px solid rgba(46, 196, 182, 0.2); display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-btn { padding: 10px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; transition: all 0.15s; }
+    .btn-success { background: #27ae60; color: white; }
+    .btn-success:hover { background: #2ecc71; }
+    .btn-secondary { background: #7f8c8d; color: white; }
+    .btn-secondary:hover { background: #95a5a6; }
+    .btn-danger { background: #e74c3c; color: white; margin-right: auto; }
+    .btn-danger:hover { background: #c0392b; }
+    .modal-valgt-item { background: #17476c; border: 1px solid #2ec4b6; border-radius: 6px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; color: white; font-size: 0.9rem; animation: vareInn 0.2s ease; }
+    .modal-fjern-kryss { background: none; border: none; color: #ff7675; font-size: 1.2rem; cursor: pointer; font-weight: bold; padding: 0 5px; line-height: 1; }
+    .modal-fjern-kryss:hover { color: #e74c3c; transform: scale(1.2); }
+    @keyframes vareInn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
 
-/* 🌟 DEN NYE FYSIKKE SKILLELINJEN
-   Ligger limt mellom det grå feltet og tekstboksen. Den blå stripen er 7.5px tykk, 
-   og den tynne hvite klipperanden i midten er akkurat 2.5px tykk. */
-.brikke-kort.pusle-stil .brikke-pusle-linje {
-    width: 100%;
-    height: 7.5px;
-    background-color: #a2c7e5;
-    position: relative;
-    /* 🌟 Økt z-index slik at buen og linjen legger seg trygt over bildepanelet */
+    /* --- PUSLESPILLKORT MED DOBBEL KLIPPELINJE FOR SAKS --- */
+    .brikke-kort.pusle-stil { 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: flex-start; 
+        gap: 0; 
+        padding: 0; 
+        background-color: #fff; 
+        position: relative; 
+        border: 3.5px solid currentColor; /* 🌟 Henter historiefargen fra JS */
+        border-radius: 12px; 
+        box-sizing: border-box; 
+        overflow: visible !important; 
+    }
+
+    .brikke-kort.pusle-stil .brikke-bilde-ramme { 
+        width: 100%; 
+        height: auto; 
+        margin-bottom: 0; 
+        border: none !important; 
+        border-top-left-radius: 8px; 
+        border-top-right-radius: 8px; 
+        overflow: hidden; 
+        background: #fff; 
+        display: flex; 
+        position: relative; 
+        z-index: 1; 
+    }
+    .brikke-kort.pusle-stil .brikke-bilde-ramme img { width: 100%; height: auto; object-fit: contain; display: block; }
+    .brikke-kort.pusle-stil .brikke-pusle-skjoet { width: 100%; height: 55px; background-color: #d1d5db; z-index: 2; position: relative; }
+
+.brikke-kort.pusle-stil .brikke-pusle-linje { 
+    width: 100%; 
+    height: 7.5px; 
+    background-color: var(--historie-farge, #a2c7e5) !important; 
+    position: relative; 
     z-index: 10; 
 }
-/* Den tynne hvite midtlinjen */
-.brikke-kort.pusle-stil .brikke-pusle-linje::before {
-    content: "";
-    position: absolute;
-    top: 2.5px;
-    left: 0;
-    width: 100%;
-    height: 2.5px;
-    background-color: #fafafa;
+    .brikke-kort.pusle-stil .brikke-pusle-linje::before { content: ""; position: absolute; top: 2.5px; left: 0; width: 100%; height: 2.5px; background-color: #fafafa; }
+
+    .brikke-kort.pusle-stil .brikke-pusle-linje .hull-venstre,
+    .brikke-kort.pusle-stil .brikke-pusle-linje .hull-hoyre { position: absolute; top: 2.5px; width: 10px; height: 2.5px; background-color: #fafafa; z-index: 99; }
+    .brikke-kort.pusle-stil .brikke-pusle-linje .hull-venstre { left: -3.5px; }
+    .brikke-kort.pusle-stil .brikke-pusle-linje .hull-hoyre { right: -3.5px; }
+
+    .brikke-kort.pusle-stil .brikke-tekst { 
+        width: 100%; 
+        background-color: #fafafa; 
+        padding: 14px 12px 12px 12px; 
+        min-height: 50px; 
+        box-sizing: border-box; 
+        z-index: 3; 
+        position: relative; 
+        margin-top: 0; 
+        border: none !important; 
+        border-bottom-left-radius: 8px; 
+        border-bottom-right-radius: 8px; 
+        background-image: none; 
+    }
+
+    .brikke-kort.pusle-stil .brikke-tekst-bue { content: ""; position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 150px; height: 60px; z-index: 5; box-shadow: 0 5px 0 0 #fafafa; background-color: transparent !important; }
+    .brikke-kort.pusle-stil .brikke-tekst * { margin-top: 0; margin-bottom: 0; }
+
+    .separate-tekst-container .brikke-tekst { padding: 10px 15px; margin-bottom: 8px; border: 2px dashed currentColor; /* 🌟 Bruker historiefargen på den stiplede linjen */ border-radius: 6px; display: flex; justify-content: flex-start; align-items: center; box-sizing: border-box; width: 100%; }
+
+    /* Stil for kort som bare inneholder tekst */
+.brikke-kort.bare-tekst-stil { 
+    border-width: 3.5px; 
+    border-style: solid;
+    border-color: var(--historie-farge, #a2c7e5) !important; /* Tvinger rammen */
+    border-radius: 12px; 
+    padding: 15px; 
+    background-color: #fff; 
+    min-height: 120px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
 }
 
-/* 🌟 DE SKUDDSIKKRE SIDEHULLENE
-   Siden de ligger inni selve linje-elementet, vil de ALLTID ligge perfekt sentrert 
-   over den hvite klipperandlinjen uansett hvor mye kortet strekker seg! */
-.brikke-kort.pusle-stil .brikke-pusle-linje .hull-venstre,
-.brikke-kort.pusle-stil .brikke-pusle-linje .hull-hoyre {
-    position: absolute;
-    top: 2.5px;                 /* Låst nøyaktig til den hvite midtlinjen */
-    width: 10px;                /* Bredde nok til å bryte den blå siderammen */
-    height: 2.5px;              /* Samme høyde som klipperanden */
-    background-color: #fafafa;  /* Visker ut rammen med bakgrunnsfargen */
-    z-index: 99;
-}
-.brikke-kort.pusle-stil .brikke-pusle-linje .hull-venstre {
-    left: -3.5px;               /* Skyves ut over venstre ytterramme */
-}
-.brikke-kort.pusle-stil .brikke-pusle-linje .hull-hoyre {
-    right: -3.5px;              /* Skyves ut over høyre ytterramme */
-}
-
-/* Tekstboksen i bunnen */
-.brikke-kort.pusle-stil .brikke-tekst { 
+    /* 📦 TEKST I BOKS (To separate rammer for bilde og tekst) */
+    .brikke-kort.boks-stil { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; display: flex; flex-direction: column; align-items: stretch; gap: 15px; }
+    
+.brikke-kort.boks-stil .brikke-bilde-ramme { 
     width: 100%; 
-    background-color: #fafafa; 
-    padding: 14px 12px 12px 12px; 
-    min-height: 50px;             
-    box-sizing: border-box; 
-    z-index: 3; 
-    position: relative; 
-    margin-top: 0; 
-    border: none;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    /* Fjernet bakgrunnsgradienten herfra siden vi nå bruker et ekte element! */
-    background-image: none; 
-}
-
-
-/* 🌟 BREDERE GEOMETRISK PUSLESPILL-HODET MED JEVNE LINJER OG MER TAKHØYDE
-   Tatt utgangspunkt i koden din med stabil 'preserveAspectRatio="none"', 
-   men økt høyden slik at toppen av den blå linjen ikke lenger kuttes. */
-.brikke-kort.pusle-stil .brikke-tekst-bue {
-    content: "";
-    position: absolute;
-
-    /* 🌟 Justert top fra -46px til -51px for å kompensere for de 5 ekstra pikslene i høyden */
-    top: -50px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    /* 🌟 Økt høyde fra 55px til 60px for å gi plass til linjetykkelsen på toppen */
-    width: 150px;
-    height: 60px;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: bottom center;
-    z-index: 5;
-
-    /* Sletter den rette linjen rett under puslehodet */
-    box-shadow: 0 5px 0 0 #fafafa;
-
-    /* 🛠️ OPPDATERT SVG: Hele kurven er forskjøvet ned til baselinje Y=54 (viewBox 0 0 150 60) */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 60" preserveAspectRatio="none"><g><path d="M 0 54 L 40 54 A 12 12 0 0 0 52 42 A 30 22 0 1 1 98 42 A 12 12 0 0 0 110 54 L 150 54 L 150 60 L 0 60 Z" fill="%23fafafa"/><path d="M 0 54 L 40 54 A 12 12 0 0 0 52 42 A 30 22 0 1 1 98 42 A 12 12 0 0 0 110 54 L 150 54" fill="none" stroke="%23a2c7e5" stroke-width="7.5" stroke-linecap="round"/><path d="M 0 54 L 40 54 A 12 12 0 0 0 52 42 A 30 22 0 1 1 98 42 A 12 12 0 0 0 110 54 L 150 54" fill="none" stroke="%23fafafa" stroke-width="2.5" stroke-linecap="round"/></g></svg>');
-}
-
-.brikke-kort.pusle-stil .brikke-tekst * {
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-
-
-/* 📦 TEKST I BOKS (To separate rammer for bilde og tekst) */
-
-/* Fjern bakgrunn og ramme på selve hovedkortet så de individuelle boksene "flyter" fritt */
-.brikke-kort.boks-stil {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Skaper det perfekte klipperand-mellomrommet mellom de to boksene */
-}
-
-/* Blå ramme rundt bildet */
-.brikke-kort.boks-stil .brikke-bilde-ramme {
-    width: 100%;
-    height: auto;
-    background-color: #fff;
-    border: 3.5px solid #a2c7e5; /* Den kjente blå rammen */
-    border-radius: 12px;
-    overflow: hidden;
-    box-sizing: border-box;
-    margin-bottom: 0 !important; /* Overstyres av gap på forelderen */
-}
-
-/* Blå ramme rundt teksten */
-.brikke-kort.boks-stil .brikke-tekst {
-    background-color: #fff; /* Endret til hvit bakgrunn for et renere uttrykk inni rammen */
-    border: 3.5px solid #a2c7e5; /* Eksakt lik blå ramme som rundt bildet */
-    border-radius: 12px;
-    padding: 12px;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-/* Skjul pusle-elementer og linje-elementer når de ikke er i bruk */
-.brikke-kort:not(.pusle-stil) .brikke-pusle-skjoet,
-.brikke-kort:not(.pusle-stil) .brikke-pusle-linje,
-.brikke-kort:not(.pusle-stil) .brikke-tekst-bue {
-    display: none !important;
-}
-
-/* ==========================================================================
-   SPESIALTILPASNING: ROMSLIGERE BILDEBOKS FOR 4 BILDER
-   ========================================================================= */
-.brikke-kort.pusle-stil:first-child:nth-last-child(4),
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort {
     height: auto; 
-    min-height: 380px; 
+    background-color: #fff; 
+    border: 3.5px solid var(--historie-farge, #a2c7e5) !important; /* Tvinger rammen */
+    border-radius: 12px; 
+    overflow: hidden; 
+    box-sizing: border-box; 
+    margin-bottom: 0 !important; 
 }
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-bilde-ramme,
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-bilde-ramme {
-    flex-shrink: 0; 
-    height: 240px; 
-    background: #fff;
-}
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-bilde-ramme img,
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-bilde-ramme img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain; 
-}
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-tekst,
-.brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-tekst {
-    padding: 12px 8px 10px 8px;
+    
+.brikke-kort.boks-stil .brikke-tekst { 
+    width: 100%; 
+    background-color: #fff; 
+    border: 3.5px solid var(--historie-farge, #a2c7e5) !important; /* Tvinger rammen */
+    border-radius: 12px; 
+    padding: 12px; 
+    box-sizing: border-box; 
+    text-align: center; 
 }
 
+    .brikke-kort:not(.pusle-stil) .brikke-pusle-skjoet, .brikke-kort:not(.pusle-stil) .brikke-pusle-linje, .brikke-kort:not(.pusle-stil) .brikke-tekst-bue { display: none !important; }
+
+    /* --- ROMSLIGERE BILDEBOKS FOR 4 BILDER --- */
+    .brikke-kort.pusle-stil:first-child:nth-last-child(4), .brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort { height: auto; min-height: 380px; }
+    .brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-bilde-ramme, .brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-bilde-ramme { flex-shrink: 0; height: 240px; background: #fff; }
+    .brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-bilde-ramme img, .brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-bilde-ramme img { height: 100%; width: 100%; object-fit: contain; }
+    .brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-tekst, .brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-tekst { padding: 12px 8px 10px 8px; }
 
     /* --- PRINT REGLER (MAKSIMAL UTNYTTELSE) --- */
     @media print {
-        @page { 
-            margin: 5mm !important; 
-            size: A4 portrait; 
-        }
-        
-        html, body { 
-            background: white; 
-            overflow: visible !important; 
-            height: auto !important; 
-            min-height: 0 !important;
-            margin: 0 !important; 
-            padding: 0 !important; 
-            -webkit-print-color-adjust: exact; 
-            print-color-adjust: exact; 
-        }
-        
-        .sidebar { 
-            display: none !important; 
-        }
-        
-        .main-content { 
-            padding: 0 !important; 
-            margin: 0 !important; 
-            overflow: visible !important; 
-            display: block !important; 
-            height: auto !important;
-            min-height: 0 !important;
-        }
-        
-        #capture-area { 
-            box-shadow: none !important; 
-            margin: 0 !important; 
-            width: 100% !important; 
-            padding: 0 !important; 
-            border: none !important; 
-            box-sizing: border-box !important; 
-            display: block !important;
-            height: auto !important;
-            min-height: 0 !important; /* FIKSET: Overskriver min-height fra skjerm-CSS */
-        }
-        
-        .story-page { 
-            width: 100% !important; 
-            box-sizing: border-box !important; 
-            padding: 4px !important; 
-            border: none !important; 
-            margin: 0 auto 14px auto !important; 
-            page-break-inside: avoid !important; /* Holder historien samlet om det er plass */
-            break-inside: avoid !important;
-        }
-
-        .cards-grid {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        .brikke-kort {
-            margin-bottom: 0 !important;
-            min-height: auto !important; /* Fjerner min-height som kan dytte marginer */
-        }
-
-/* Effektiv print-stabling */
-        .separate-tekst-container {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            gap: 0 !important;
-        }
-        .klippe-linje {
-            background: transparent !important;
-            border-left: 1.5px dashed #000 !important;
-            border-right: 1.5px dashed #000 !important;
-            border-bottom: 1.5px dashed #000 !important;
-            margin: 0 !important; /* Tvinger null mellomrom på print */
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-        .separate-tekst-container .klippe-linje:first-child {
-            border-top: 1.5px dashed #000 !important;
-        }
+        @page { margin: 5mm !important; size: A4 portrait; }
+        html, body { background: white; overflow: visible !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .sidebar { display: none !important; }
+        .main-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; display: block !important; height: auto !important; min-height: 0 !important; }
+        #capture-area { box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; border: none !important; box-sizing: border-box !important; display: block !important; height: auto !important; min-height: 0 !important; }
+        .story-page { width: 100% !important; box-sizing: border-box !important; padding: 4px !important; border: none !important; margin: 0 auto 14px auto !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+        .cards-grid { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+        .brikke-kort { margin-bottom: 0 !important; min-height: auto !important; }
+        .separate-tekst-container { page-break-inside: avoid !important; break-inside: avoid !important; gap: 0 !important; }
+        .klippe-linje { background: transparent !important; border-left: 1.5px dashed #000 !important; border-right: 1.5px dashed #000 !important; border-bottom: 1.5px dashed #000 !important; margin: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .separate-tekst-container .klippe-linje:first-child { border-top: 1.5px dashed #000 !important; }
     }
 </style>
+
 </head>
 <body>
 <div class="sidebar">
@@ -747,9 +374,10 @@
     <div class="control-item">
         <span>Tekstnivå:</span>
         <select id="select-level" onchange="updateLivePreview()" style="width: 160px;">
-            <option value="tekst_nivaa_1">Nivå 1 (Korte setninger)</option>
+            <option value="tekst_nivaa_1">Nivå 1 (Enkel)</option>
             <option value="tekst_nivaa_2" selected>Nivå 2 (Medium)</option>
-            <option value="tekst_nivaa_3">Nivå 3 (Mer detaljert)</option>
+            <option value="tekst_nivaa_3">Nivå 3 (Avansert)</option>
+            <option value="tekst_nivaa_4">Nivå 4 (Ekspert)</option>
         </select>
     </div>
 
@@ -761,6 +389,8 @@
         <option value="boks">Tekst i boks</option>
         <option value="pusle">Puslespill-form</option>
         <option value="linjer">Tekst på linjer under</option>
+        <option value="bare-tekst">Bare tekst</option>
+        <option value="bare-bilder">Bare bilder</option>
     </select>
 </div>
 
@@ -805,6 +435,14 @@
         </label>
     </div>
 
+    <div class="control-item">
+        <span>Fargekod historier (forskjellige farger)</span>
+        <label class="switch">
+            <input type="checkbox" id="toggle-color-code" onchange="updateLivePreview()">
+            <div class="slider"></div>
+        </label>
+    </div>
+
 <div class="btn-group" style="display: flex; flex-direction: column; gap: 10px; margin-top: auto; margin-bottom: 10px;">
         
         <div style="display: flex; gap: 10px; align-items: stretch;">
@@ -814,12 +452,12 @@
         </div>
 
         <div style="display: flex; gap: 10px; align-items: stretch;">
-            <button type="button" id="btn-toggle-tips" class="action-btn" onclick="togglePedTips()" style="flex: 1; background-color: #2ec4b6; color: white; margin-bottom: 0;">
-                💡 Ped. tips
-            </button>
-            <button type="button" class="action-btn" onclick="apneStorskjermSpill()" style="flex: 1; background-color: #ffd166; color: #011627; margin-bottom: 0;">
-                🎮 Spill
-            </button>
+        <button type="button" id="btn-toggle-tips" class="action-btn" onclick="togglePedTips()" style="flex: 1; background-color: #2ec4b6; color: white; margin-bottom: 0; padding: 6px 10px; line-height: 1.2;">
+            💡 Ped. tips
+        </button>
+        <button type="button" class="action-btn" onclick="apneStorskjermSpill()" style="flex: 1; background-color: #ffd166; color: #011627; margin-bottom: 0; padding: 6px 10px; line-height: 1.2;">
+            🎮 Spill
+        </button>
         </div>
 
     </div>
@@ -1275,7 +913,60 @@ function lesOppTekst(tekst, event) {
     window.speechSynthesis.speak(uttale);
 }
 
-/* 🛠️ NY TOTALREVIDERT HOVEDGENERATOR */
+const historieFarger = [
+    "#A2C7E5", // 1. Original lyseblå
+    "#E5A2A2", // 2. Sarterød / Rosa
+    "#A2E5A4", // 3. Lysegrønn
+    "#E5DCA2", // 4. Gul / Sand
+    "#D6A2E5", // 5. Lilla
+    "#E5BAA2", // 6. Oransje / Fersken
+    "#A2E5D9", // 7. Turkis
+    "#C4C4C4", // 8. Grå
+    "#87A8A4", // 9. Salviegrønn
+    "#DEBA9D", // 10. Lys brun
+    "#BBBF95", // 11. Oliven/Sennep
+    "#E5A2C8", // 12. Sterkere rosa
+    "#9597BF", // 13. Blålilla
+    "#95BFA2", // 14. Mintgrønn
+    "#E5CFA2", // 15. Gullgul
+    "#A2BFE5", // 16. Denimblå
+    "#D9E5A2", // 17. Limegrønn
+    "#BCA2E5", // 18. Lavendel
+    "#E5A2B0", // 19. Korall
+    "#A2E5BE"  // 20. Skogsgrønn
+];
+
+
+
+/* 🌟 FUNKSJON FOR Å DYNAMISK TEGNE OG FARGELEGGE PUSLEBUEN PER HISTORIE */
+function fargeleggPusleBuer() {
+    // Finn alle buene på siden som skal fargelegges
+    const buer = document.querySelectorAll('.js-pusle-bue');
+
+    buer.forEach(bue => {
+        // Finn foreldre-elementet (.brikke-pusle-linje) for å hente den dynamiske fargen
+        const forelderLinje = bue.closest('.brikke-pusle-linje');
+        
+        if (forelderLinje) {
+            // Hent fargen fra forelderens inline style (som vi satte i generateStories)
+            const farge = forelderLinje.style.backgroundColor;
+            
+            // Konverter fargen til en URL-vennlig SVG-hex (replace '#' med '%23')
+            const urlFarge = farge.replace('#', '%23');
+            
+            // 🛠️ HELE SVG-TEKSTSTRENGEN (nøyaktig slik du hadde den med to linjer):
+            const svgTekst = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 60" preserveAspectRatio="none"><g><path d="M 0 54 L 40 54 A 12 12 0 0 0 52 42 A 30 22 0 1 1 98 42 A 12 12 0 0 0 110 54 L 150 54 L 150 60 L 0 60 Z" fill="%23fafafa"/><path d="M 0 54 L 40 54 A 12 12 0 0 0 52 42 A 30 22 0 1 1 98 42 A 12 12 0 0 0 110 54 L 150 54" fill="none" stroke="${urlFarge}" stroke-width="7.5" stroke-linecap="round"/><path d="M 0 54 L 40 54 A 12 12 0 0 0 52 42 A 30 22 0 1 1 98 42 A 12 12 0 0 0 110 54 L 150 54" fill="none" stroke="%23ffffff" stroke-width="2.5" stroke-linecap="round"/></g></svg>`;
+
+            // Sjekk at SVG-en tegnes ordentlig for de forskjellige fargene
+            console.log(`Fargelegger bue med: ${farge}`);
+
+            // Dytter den fargelagte SVG-en direkte inn som bakgrunnsbilde via inline style
+            bue.style.backgroundImage = `url('data:image/svg+xml;utf8,${svgTekst}')`;
+        }
+    });
+}
+
+/* 🛠️ NY TOTALREVIDERT HOVEDGENERATOR WITH PUZZLE FIX */
 function generateStories() {
     const placeholder = document.getElementById('placeholder-image');
     const area = document.getElementById('capture-area');
@@ -1288,7 +979,11 @@ function generateStories() {
     const isBold = document.getElementById('toggle-bold').checked;
     const visNummer = document.getElementById('toggle-numbers').checked;
 
-    // 🌟 NY LOGIKK: Hent gjeldende stiltype fra nedtrekksmenyen din
+    // Sjekker om brukeren har aktivert bryteren for unike farger
+    const fargekodCheckbox = document.getElementById('toggle-color-code');
+    const fargekodAktivert = fargekodCheckbox ? fargekodCheckbox.checked : false;
+
+    // Hent gjeldende stiltype fra nedtrekksmenyen din
     const stilVelger = document.getElementById('kort-stil-velger');
     const valgtStil = stilVelger ? stilVelger.value : 'standard';
 
@@ -1296,6 +991,10 @@ function generateStories() {
     const onskerPusleStil = (valgtStil === 'pusle');
     const onskerBoksStil = (valgtStil === 'boks');
     const tekstPaEgenLinje = (valgtStil === 'linjer');
+    
+    // 🌟 NYE FLAGG: Sjekker om vi skal skjule noe
+    const skjulBilder = (valgtStil === 'bare-tekst');
+    const skjulTekst = (valgtStil === 'bare-bilder' || valgtStil === 'linjer');
 
     let historierSomSkalVises = [];
     puslehistorier.forEach(historie => {
@@ -1322,6 +1021,11 @@ function generateStories() {
         const gridKlasse = historie.brikker_totalt === 3 ? "grid-cols-3" : "grid-cols-4";
         let separateTekstLinjer = [];
 
+        // Henter ut unik farge basert på historiens ID. Fallback til standard blå (#a2c7e5) hvis avskrudd.
+        const gjeldendeFarge = fargekodAktivert 
+            ? historieFarger[(historie.id - 1) % historieFarger.length] 
+            : "#a2c7e5";
+
         html += `
             <div class="story-page">
                 <h1 class="page-title">${isUpper ? historie.tittel.toUpperCase() : historie.tittel}</h1>
@@ -1340,29 +1044,47 @@ function generateStories() {
                 kortKlasser += " boks-stil";
             } else if (tekstPaEgenLinje) {
                 kortKlasser += " linjer-stil";
+            } else if (skjulBilder) {
+                kortKlasser += " bare-tekst-stil";
+            } else if (valgtStil === 'bare-bilder') {
+                kortKlasser += " bare-bilder-stil";
             }
 
-            let kortStil = tekstPaEgenLinje ? 'style="min-height: auto; padding-bottom: 8px;"' : '';
+            // 🌟 FIKSEN LIGGER HER: Vi skiller puslestil fra de andre så den ikke mister kantfargen sin!
+            let kortStil = "";
+            if (onskerPusleStil) {
+                kortStil = `style="border-color: ${gjeldendeFarge}; --historie-farge: ${gjeldendeFarge};"`;
+            } else if (tekstPaEgenLinje) {
+                kortStil = `style="--historie-farge: ${gjeldendeFarge}; min-height: auto; padding-bottom: 8px;"`;
+            } else if (skjulBilder) {
+                kortStil = `style="--historie-farge: ${gjeldendeFarge}; border-radius: 12px; padding: 15px;"`;
+            } else {
+                kortStil = `style="--historie-farge: ${gjeldendeFarge};"`;
+            }
 
             html += `
                 <div class="${kortKlasser}" ${kortStil}>
-                    ${visNummer ? `<div class="brikke-nummer-merke">${brikke.brikke_nr}</div>` : ''}
+                    ${visNummer ? `<div class="brikke-nummer-merke" style="background-color: ${gjeldendeFarge};">${brikke.brikke_nr}</div>` : ''}
                     
-                    <div class="brikke-bilde-ramme" style="${tekstPaEgenLinje ? 'margin-bottom: 0;' : ''}">
-                        <img src="${brikke.bilde}" alt="Brikke ${brikke.brikke_nr}" onerror="this.style.display='none'; this.parentNode.innerText='Mangler bilde';">
-                    </div>
+                    ${!skjulBilder ? `
+                        <div class="brikke-bilde-ramme" style="${tekstPaEgenLinje ? 'margin-bottom: 0;' : ''}">
+                            <img src="${brikke.bilde}" alt="Brikke ${brikke.brikke_nr}" onerror="this.style.display='none'; this.parentNode.innerText='Mangler bilde';">
+                        </div>
+                    ` : ''}
                     
                     ${onskerPusleStil ? `
                         <div class="brikke-pusle-skjoet"></div>
-                        <div class="brikke-pusle-linje">
-                            <div class="brikke-tekst-bue"></div>
+                        
+                        <div class="brikke-pusle-linje" style="background-color: ${gjeldendeFarge};">
+                            <div class="brikke-tekst-bue js-pusle-bue" style=""></div>
+                            
                             <div class="hull-venstre"></div>
                             <div class="hull-hoyre"></div>
                         </div>
                     ` : ''}
                     
-                    ${!tekstPaEgenLinje ? `
-                        <div class="brikke-tekst">
+                    ${!skjulTekst ? `
+                        <div class="brikke-tekst" style="border-color: ${gjeldendeFarge};">
                             ${gjeldendeTekst}
                         </div>
                     ` : ''}
@@ -1381,9 +1103,13 @@ function generateStories() {
                 <div class="separate-tekst-container">
             `;
             separateTekstLinjer.forEach(linje => {
+                const bakgrunnsStil = fargekodAktivert 
+                    ? `background-color: ${gjeldendeFarge}33; border-color: ${gjeldendeFarge};` 
+                    : `border-color: ${gjeldendeFarge};`;
+
                 html += `
-                    <div class="brikke-tekst klippe-linje">
-                        ${visNummer ? `<strong style="margin-right: 8px;">${linje.nr}.</strong>` : ''} 
+                    <div class="brikke-tekst klippe-linje" style="${bakgrunnsStil}">
+                        ${visNummer ? `<strong style="margin-right: 8px; color: ${fargekodAktivert ? '#333' : gjeldendeFarge};">${linje.nr}.</strong>` : ''} 
                         <span>${linje.tekst}</span>
                     </div>
                 `;
@@ -1403,6 +1129,7 @@ function generateStories() {
 
     outputContainer.style.fontWeight = isBold ? "bold" : "normal";
     area.style.fontFamily = fontFamily;
+    fargeleggPusleBuer();
 }
 
 
@@ -1439,9 +1166,11 @@ function resetApp() {
 
     velgAlleHistorier(false);
 
-    document.getElementById('select-level').value = "tekst_nivaa_2";
+    // Setter dropdown tilbake til Nivå 2 som standard ved nullstilling
+    const levelVelger = document.getElementById('select-level');
+    if (levelVelger) levelVelger.value = "tekst_nivaa_2";
     
-    // Setter dropdown tilbake til standardvisning i stedet for den gamle av/på-bryteren
+    // Setter stil-dropdown tilbake til standardvisning
     const stilVelger = document.getElementById('kort-stil-velger');
     if (stilVelger) stilVelger.value = "standard";
 
@@ -1450,6 +1179,7 @@ function resetApp() {
     document.getElementById('toggle-upper').checked = false;
     document.getElementById('toggle-bold').checked = false;
     document.getElementById('toggle-numbers').checked = false; 
+    document.getElementById('toggle-color-code').checked = false;
 
     document.getElementById('placeholder-image').style.display = "flex";
     document.getElementById('capture-area').style.display = "none";
