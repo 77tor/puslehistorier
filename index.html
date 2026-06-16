@@ -308,20 +308,30 @@
     .brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-bilde-ramme img, .brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-bilde-ramme img { height: 100%; width: 100%; object-fit: contain; }
     .brikke-kort.pusle-stil:first-child:nth-last-child(4) .brikke-tekst, .brikke-kort.pusle-stil:first-child:nth-last-child(4) ~ .brikke-kort .brikke-tekst { padding: 12px 8px 10px 8px; }
 
-    /* --- PRINT REGLER (MAKSIMAL UTNYTTELSE) --- */
+/* --- PRINT REGLER (MAKSIMAL UTNYTTELSE) --- */
     @media print {
         @page { margin: 5mm !important; size: A4 portrait; }
         html, body { background: white; overflow: visible !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        
+        /* 🌟 NYTT: Skjuler historietitlene (f.eks. "Snømannen") fullstendig på utskriften */
+        .page-title { display: none !important; }
+
         .sidebar { display: none !important; }
         .main-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; display: block !important; height: auto !important; min-height: 0 !important; }
         #capture-area { box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; border: none !important; box-sizing: border-box !important; display: block !important; height: auto !important; min-height: 0 !important; }
-        .story-page { width: 100% !important; box-sizing: border-box !important; padding: 4px !important; border: none !important; margin: 0 auto 14px auto !important; page-break-inside: avoid !important; break-inside: avoid !important; }
-        .cards-grid { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+        
+        /* 🌟 JUSTERT: Endret padding fra 4px til 0 for å utnytte absolutt hele arket oppover */
+        .story-page { width: 100% !important; box-sizing: border-box !important; padding: 0 !important; border: none !important; margin: 0 auto 14px auto !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+        
+        /* 🌟 NYTT: Sørger for at rutenettet med brikker starter helt øverst på arket */
+        .cards-grid { margin-top: 0 !important; margin-bottom: 0 !important; padding-bottom: 0 !important; }
+        
         .brikke-kort { margin-bottom: 0 !important; min-height: auto !important; }
         .separate-tekst-container { page-break-inside: avoid !important; break-inside: avoid !important; gap: 0 !important; }
         .klippe-linje { background: transparent !important; border-left: 1.5px dashed #000 !important; border-right: 1.5px dashed #000 !important; border-bottom: 1.5px dashed #000 !important; margin: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         .separate-tekst-container .klippe-linje:first-child { border-top: 1.5px dashed #000 !important; }
     }
+
 </style>
 
 </head>
@@ -542,6 +552,7 @@
                 <option value="tekst_nivaa_1">Nivå 1 (Enkel)</option>
                 <option value="tekst_nivaa_2" selected>Nivå 2 (Medium)</option>
                 <option value="tekst_nivaa_3">Nivå 3 (Utfordrende)</option>
+                <option value="tekst_nivaa_4">Nivå 4 (Ekspert)</option>
             </select>
         </div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -1238,14 +1249,13 @@ function apneStorskjermSpill() {
         spillFontVelger.dataset.hasListener = "true";
     }
 
-    // 🌟 NYTT: Lytter til tekststørrelse-velgeren INNE i spillet
+    // Lytter til tekststørrelse-velgeren INNE i spillet
     const spillStorrelseVelger = document.getElementById('game-text-size-select');
     if (spillStorrelseVelger && !spillStorrelseVelger.dataset.hasListener) {
         spillStorrelseVelger.addEventListener('change', () => {
             if (modal.style.display === "flex") {
                 const container = document.getElementById('game-cards-container');
                 if (container) {
-                    // Setter en multiplikator-faktor (f.eks 0.8, 1 eller 1.3)
                     container.style.setProperty('--spill-tekst-storrelse', spillStorrelseVelger.value);
                 }
             }
@@ -1320,10 +1330,11 @@ function startSpill() {
         container.style.gap = "calc(35px * var(--spill-zoom, 1))";
     }
     
-spillData = valgtHistorie.brikker.map((brikke) => {
+    spillData = valgtHistorie.brikker.map((brikke) => {
         return {
             originalIndex: parseInt(brikke.brikke_nr), 
             bilde: brikke.bilde,
+            /* 🌟 Henter ut det nye valgte nivået (f.eks tekst_nivaa_4), eller faller tilbake på nivå 2 om det mangler */
             tekst: brikke[nivaa] || brikke.tekst_nivaa_2
         };
     });
@@ -1333,14 +1344,11 @@ spillData = valgtHistorie.brikker.map((brikke) => {
         let brikkeEttErTilVenstre = true;
 
         while (brikkeEttErTilVenstre) {
-            // Standard tilfeldig stokking (Fisher-Yates)
             for (let i = spillData.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [spillData[i], spillData[j]] = [spillData[j], spillData[i]];
             }
 
-            // Sjekk: Hvis det første kortet i arrayet har originalIndex lik 1, 
-            // vil loopen kjøre på nytt for å sikre reell og god forvirring!
             if (spillData[0].originalIndex !== 1) {
                 brikkeEttErTilVenstre = false; 
             }
@@ -1348,8 +1356,6 @@ spillData = valgtHistorie.brikker.map((brikke) => {
     }
 
     spillData.forEach((kort, index) => {
-
-
         const cardBox = document.createElement('div');
         cardBox.id = `game-card-${index}`;
         cardBox.className = "game-card-trackable";
@@ -1378,7 +1384,6 @@ spillData = valgtHistorie.brikker.map((brikke) => {
                 transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
             `;
         } else {
-            // Sjekker om vi er i "bare bilder"-modus og setter en lavere min-height på kortet
             const kortMinHoyde = spillModus === "bilder" ? "280px" : "380px";
 
             cardBox.style.cssText = `
@@ -1401,7 +1406,6 @@ spillData = valgtHistorie.brikker.map((brikke) => {
             `;
         }
 
-// 🔄 SNU-KNAPP: Brukes nå KUN på forsiden av kortene (svever halvt over kanten)
         const snuKnappHTML = `
             <button class="flip-btn" onclick="snuEnkeltKort(this, '${spillModus}', event)" style="
                 position: absolute;
@@ -1425,7 +1429,6 @@ spillData = valgtHistorie.brikker.map((brikke) => {
             " onmouseover="this.style.background='rgba(46, 196, 182, 0.9)'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.25)'; this.style.transform='scale(1)'" title="Snu kortet">🔄</button>
         `;
 
-        // 🌟 OPPDATERT: Fjernet ${snuKnappHTML} fra baksidene, og lagt inn igjen "Klikk for å snu/lese"-tekstene
         const baksideHTML = spillModus === "tekst" ? `
             <div class="card-back" style="display: flex; align-items: center; justify-content: space-between; width: 100%; color: #ffd166; user-select: none;">
                 <div style="display: flex; align-items: center; gap: calc(15px * var(--spill-zoom, 1));">
@@ -1457,11 +1460,9 @@ spillData = valgtHistorie.brikker.map((brikke) => {
             `;
         } else {
             forsideHTML += `<div class="card-front" style="display: none; width: 100%; height: 100%; flex-direction: column; justify-content: space-between; align-items: center; flex-grow: 1; position: relative;">`;
-            forsideHTML += snuKnappHTML; // Snu-knappen beholdes på forsiden
+            forsideHTML += snuKnappHTML;
 
-
-if (spillModus === "begge" || spillModus === "bilder") {
-                // I "bare bilder" lar vi boksen bruke den naturlige plassen i stedet for en låst kjempehøyde
+            if (spillModus === "begge" || spillModus === "bilder") {
                 const bildeMaksHoyde = spillModus === "bilder" ? "calc(220px * var(--spill-zoom, 1))" : "calc(250px * var(--spill-zoom, 1))";
 
                 forsideHTML += `
@@ -1488,7 +1489,6 @@ if (spillModus === "begge" || spillModus === "bilder") {
 
         cardBox.innerHTML = baksideHTML + forsideHTML;
 
-// ... resten av event-lytterne for dra-og-slipp
         let isDragging = false;
         
         cardBox.addEventListener('mousedown', function(e) {
@@ -1500,12 +1500,10 @@ if (spillModus === "begge" || spillModus === "bilder") {
         });
 
         cardBox.addEventListener('mousemove', () => isDragging = true);
-        
         cardBox.style.cursor = "pointer";
 
         cardBox.addEventListener('mouseup', function(e) {
             const back = this.querySelector('.card-back');
-            
             if (back && back.style.display !== 'none') {
                 if (!isDragging) {
                     const flipBtn = this.querySelector('.flip-btn');
@@ -1521,11 +1519,9 @@ if (spillModus === "begge" || spillModus === "bilder") {
 
         cardBox.addEventListener('dragstart', function(e) {
             e.dataTransfer.setData('text/plain', this.id);
-            
             const dragImg = new Image();
             dragImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
             e.dataTransfer.setDragImage(dragImg, 0, 0);
-
             setTimeout(() => {
                 this.style.opacity = '0.3';
                 this.style.borderStyle = 'dashed';
@@ -1535,9 +1531,7 @@ if (spillModus === "begge" || spillModus === "bilder") {
         cardBox.addEventListener('dragend', function(e) {
             this.style.opacity = '1';
             this.style.borderStyle = 'solid';
-            
             this.style.cursor = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' style='font-size:40px'><text y='40'>🖐️</text></svg>\") 24 24, move";
-
             Array.from(container.children).forEach(k => {
                 k.classList.remove('kort-sveve-over');
                 k.style.transform = 'scale(1)';
@@ -1545,39 +1539,26 @@ if (spillModus === "begge" || spillModus === "bilder") {
             });
         });
 
-        cardBox.addEventListener('dragenter', function(e) {
-            e.preventDefault();
-        });
-
-        // 🌟 OPPDATERT: Bruker dragover i stedet for dragenter for stabil farging mens man svever over
+        cardBox.addEventListener('dragenter', function(e) { e.preventDefault(); });
         cardBox.addEventListener('dragover', function(e) {
             e.preventDefault(); 
-            if (this.style.opacity !== '0.3') {
-                this.classList.add('kort-sveve-over');
-            }
+            if (this.style.opacity !== '0.3') { this.classList.add('kort-sveve-over'); }
         });
-
-        // 🌟 OPPDATERT: Fjerner fargen med en gang musa forlater kortet
-        cardBox.addEventListener('dragleave', function(e) {
-            this.classList.remove('kort-sveve-over');
-        });
+        cardBox.addEventListener('dragleave', function(e) { this.classList.remove('kort-sveve-over'); });
 
         cardBox.addEventListener('drop', function(e) {
             e.preventDefault();
             const draggedId = e.dataTransfer.getData('text/plain');
             const draggedCard = document.getElementById(draggedId);
-            
             if (draggedCard && draggedCard !== this) {
                 const brikkerArray = Array.from(container.children);
                 const gmlIndex = brikkerArray.indexOf(draggedCard);
                 const nyIndex = brikkerArray.indexOf(this);
-                
                 if (gmlIndex < nyIndex) {
                     container.insertBefore(draggedCard, this.nextSibling);
                 } else {
                     container.insertBefore(draggedCard, this);
                 }
-                
                 Array.from(container.children).forEach(kort => {
                     kort.classList.remove('kort-sveve-over');
                     kort.style.borderColor = "#2ec4b6";
@@ -1585,7 +1566,6 @@ if (spillModus === "begge" || spillModus === "bilder") {
                     kort.style.transform = 'scale(1)';
                     kort.style.boxShadow = spillModus === "tekst" ? '0 calc(6px * var(--spill-zoom, 1)) calc(12px * var(--spill-zoom, 1)) rgba(0,0,0,0.3)' : '0 calc(10px * var(--spill-zoom, 1)) calc(20px * var(--spill-zoom, 1)) rgba(0,0,0,0.4)';
                 });
-                
                 oppdaterKortKnapper(spillModus); 
             }
         });
